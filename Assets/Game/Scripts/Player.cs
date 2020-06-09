@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float speed = 5.0f;
+    [SerializeField]
+    private float speed = 5.0f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -16,16 +18,22 @@ public class Player : MonoBehaviour
     void Update()
     {
         Debug.Log("Update: called");
+        Movement();
+    }
+
+    private void Movement()
+    {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
         transform.Translate(Vector3.right * Time.deltaTime * speed * horizontalInput);
         transform.Translate(Vector3.up * Time.deltaTime * speed * verticalInput);
 
         //contraining player to the allotted screen
+        //-----------------------------------------
         //Constraints for y direction
         if (transform.position.y > 0)
         {
-            transform.position = new Vector3(transform.position.x,0,0);
+            transform.position = new Vector3(transform.position.x, 0, 0);
         }
         else if (transform.position.y < -4.2f)
         {
@@ -33,9 +41,9 @@ public class Player : MonoBehaviour
         }
 
         //constraints for x direction
-        //infinite side movement implemented
+        //wrapping implemented
         if (transform.position.x > 9.49f)
-        { 
+        {
             transform.position = new Vector3(-9.45f, transform.position.y, 0);
         }
         else if (transform.position.x < -9.45f)
