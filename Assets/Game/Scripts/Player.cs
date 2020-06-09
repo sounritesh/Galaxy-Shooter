@@ -16,6 +16,31 @@ public class Player : MonoBehaviour
     void Update()
     {
         Debug.Log("Update: called");
-        transform.Translate(Vector3.right * Time.deltaTime * speed);
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
+        transform.Translate(Vector3.right * Time.deltaTime * speed * horizontalInput);
+        transform.Translate(Vector3.up * Time.deltaTime * speed * verticalInput);
+
+        //contraining player to the allotted screen
+        //Constraints for y direction
+        if (transform.position.y > 0)
+        {
+            transform.position = new Vector3(transform.position.x,0,0);
+        }
+        else if (transform.position.y < -4.2f)
+        {
+            transform.position = new Vector3(transform.position.x, -4.2f, 0);
+        }
+
+        //constraints for x direction
+        //infinite side movement implemented
+        if (transform.position.x > 9.49f)
+        { 
+            transform.position = new Vector3(-9.45f, transform.position.y, 0);
+        }
+        else if (transform.position.x < -9.45f)
+        {
+            transform.position = new Vector3(9.49f, transform.position.y, 0);
+        }
     }
 }
