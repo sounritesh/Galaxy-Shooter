@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public GameObject laserPrefab;
     [SerializeField]
-    private float speed = 5.0f;
+    private GameObject _laserPrefab;
+    [SerializeField]
+    private float _speed = 5.0f;
+
+    [SerializeField]
+    private float fireRate = 0.25f;
+    private float canFire = 0.0f;
 
     // Start is called before the first frame update
     void Start()
@@ -21,19 +26,28 @@ public class Player : MonoBehaviour
         Debug.Log("Update: called");
         Movement();
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKey(KeyCode.Mouse0))
         {
-            Instantiate(laserPrefab, transform.position + new Vector3(0, 0.88f, 0), Quaternion.identity);
+            Shoot();
         }
+    }
 
+    private void Shoot()
+    {
+        //ensuring cooldown time
+        if (Time.time > canFire)
+        {
+            Instantiate(_laserPrefab, transform.position + new Vector3(0, 0.88f, 0), Quaternion.identity);
+            canFire = Time.time + fireRate;
+        }
     }
 
     private void Movement()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
-        transform.Translate(Vector3.right * Time.deltaTime * speed * horizontalInput);
-        transform.Translate(Vector3.up * Time.deltaTime * speed * verticalInput);
+        transform.Translate(Vector3.right * Time.deltaTime * _speed * horizontalInput);
+        transform.Translate(Vector3.up * Time.deltaTime * _speed * verticalInput);
 
         //contraining player to the allotted screen
         //-----------------------------------------
