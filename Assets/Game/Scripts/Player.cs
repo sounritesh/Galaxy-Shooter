@@ -7,11 +7,15 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _laserPrefab;
     [SerializeField]
+    private GameObject _tripleShotPrefab;
+    [SerializeField]
     private float _speed = 5.0f;
 
     [SerializeField]
     private float fireRate = 0.25f;
     private float canFire = 0.0f;
+
+    public bool canTripleShot = false;
 
     // Start is called before the first frame update
     void Start()
@@ -36,8 +40,17 @@ public class Player : MonoBehaviour
     {
         //ensuring cooldown time
         if (Time.time > canFire)
-        {
-            Instantiate(_laserPrefab, transform.position + new Vector3(0, 0.88f, 0), Quaternion.identity);
+        {  
+            //shooting 3 lasers when Triple Shot power up is active
+            if (canTripleShot)
+            {
+                Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
+            }
+            //shooting a single laser
+            else
+            {
+                Instantiate(_laserPrefab, transform.position + new Vector3(0, 0.88f, 0), Quaternion.identity);
+            }
             canFire = Time.time + fireRate;
         }
     }
@@ -71,5 +84,19 @@ public class Player : MonoBehaviour
         {
             transform.position = new Vector3(9.49f, transform.position.y, 0);
         }
+    }
+
+    public void TurnTripleShotOn()
+    {
+        //enable triple shot power up
+        canTripleShot = true;
+        StartCoroutine(TripleShotPowerDownRoutine());
+    }
+
+    public IEnumerator TripleShotPowerDownRoutine()
+    {
+        //wait for 5 seconds before turning power up off
+        yield return new WaitForSeconds(5);
+        canTripleShot = false;
     }
 }
