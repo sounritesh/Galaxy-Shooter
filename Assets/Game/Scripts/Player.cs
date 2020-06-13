@@ -15,7 +15,8 @@ public class Player : MonoBehaviour
     private float fireRate = 0.25f;
     private float canFire = 0.0f;
 
-    public bool canTripleShot = false;
+    private bool canTripleShot = false;
+    private bool canSpeedBoost = false;
 
     // Start is called before the first frame update
     void Start()
@@ -59,6 +60,14 @@ public class Player : MonoBehaviour
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
+
+        //checking if speed boost is enabled
+        if (canSpeedBoost)
+        {
+            //making speed x1.5
+            _speed *= 1.5f;
+        }
+
         transform.Translate(Vector3.right * Time.deltaTime * _speed * horizontalInput);
         transform.Translate(Vector3.up * Time.deltaTime * _speed * verticalInput);
 
@@ -98,5 +107,18 @@ public class Player : MonoBehaviour
         //wait for 5 seconds before turning power up off
         yield return new WaitForSeconds(5);
         canTripleShot = false;
+    }
+
+    public void TurnSpeedBoostOn()
+    {
+        canSpeedBoost = true;
+        StartCoroutine(SpeedBoostPowerDownRoutine());
+    }
+
+    public IEnumerator SpeedBoostPowerDownRoutine()
+    {
+        yield return new WaitForSeconds(5.0f);
+        canSpeedBoost = false;
+        _speed = 5.0f;
     }
 }
